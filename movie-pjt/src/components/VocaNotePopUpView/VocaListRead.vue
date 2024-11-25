@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div id="voca">
     <input type="checkbox" id="is_memorized" @input="memorizedWord(voca.id)" v-model="voca.is_memorized">
       <span @click="toggleMemoShow">
         <span>{{ voca.word }}</span> : 
         <span>{{ voca.word_mean }}</span>
       </span>
-    <button @click="deleteWord(voca.id)" v-if="showDelete">X</button>
-    <button @click="toggleFormShow" v-if="showUpdate">{{ isVisiable ? '취소' : '수정' }}</button>
+    <button @click="deleteWord(voca.id)" v-if="showDelete" class="emoji-button"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
+    <button @click="toggleFormShow" v-if="showUpdate" ><font-awesome-icon :icon="['fal', 'pen-to-square']" /></button>
     <br>
-    <form v-if="isVisiable" @submit.prevent="updateWord(voca.id)">
+    <form v-if="isVisiable" @submit.prevent="updateWord(voca.id)" class="voca-form-container">
       <label for="word">word:</label>
       <input type="text" id="word" v-model.trim="word">
       <br>
@@ -30,8 +30,12 @@
   </div>
 </template>
 
+
+
 <script setup>
 import { ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 const props = defineProps({
   voca:Object,
   showDelete:Boolean,
@@ -74,5 +78,55 @@ const toggleMemoShow = function () {
 </script>
 
 <style scoped>
+ .voca-form-container {
+    background: rgba(255, 255, 255, 0.2); /* 반투명한 배경 */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 테두리 */
+    border-radius: 12px; /* 둥근 모서리 */
+    padding: 16px; /* 내부 여백 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+    backdrop-filter: blur(10px); /* 블러 효과 */
+    max-width: 400px; /* 최대 너비 */
+    margin: 16px auto; /* 가운데 정렬 */
+  }
+
+  .voca-form-container label {
+    display: block; /* 라벨 블록 */
+    margin-bottom: 8px; /* 아래 여백 */
+    font-weight: bold; /* 두꺼운 글씨 */
+    color: #fff; /* 흰색 글씨 */
+  }
+
+  .voca-form-container input[type="text"],
+  .voca-form-container textarea {
+    width: 100%; /* 입력창 너비 100% */
+    padding: 8px; /* 내부 여백 */
+    margin-bottom: 12px; /* 아래 여백 */
+    border: 1px solid rgba(255, 255, 255, 0.4); /* 테두리 */
+    border-radius: 8px; /* 둥근 입력창 */
+    background: rgba(255, 255, 255, 0.2); /* 입력창 반투명 */
+    color: #fff; /* 흰색 글씨 */
+    font-size: 16px; /* 글씨 크기 */
+  }
+
+  .voca-form-container input[type="text"]:focus,
+  .voca-form-container textarea:focus {
+    outline: none; /* 포커스 시 기본 테두리 제거 */
+    border: 1px solid rgba(255, 255, 255, 0.7); /* 포커스 테두리 색상 */
+  }
+
+  .voca-form-container input[type="submit"] {
+    background: rgba(0, 123, 255, 0.8); /* 버튼 배경 */
+    color: #fff; /* 흰색 글씨 */
+    padding: 10px 16px; /* 버튼 여백 */
+    border: none; /* 테두리 제거 */
+    border-radius: 8px; /* 둥근 버튼 */
+    font-size: 16px; /* 글씨 크기 */
+    cursor: pointer; /* 포인터 커서 */
+    transition: background 0.3s; /* 배경색 변화 */
+  }
+
+  .voca-form-container input[type="submit"]:hover {
+    background: rgba(0, 123, 255, 1); /* 호버 배경색 */
+  }
 
 </style>
