@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework.exceptions import ValidationError
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.utils import user_email, user_field, user_username
@@ -50,6 +51,20 @@ class CustomRegisterSerializer(RegisterSerializer):
 class CustomLoginSerializer(LoginSerializer):
     username = serializers.CharField(required=True)
     email = None
+
+    def validate(self, attrs):
+        # 사용자가 입력한 username을 통해 해당 사용자 존재 여부 확인
+        user = None
+        try:
+            user = get_user_model().objects.get(username=attrs.get('username'))
+        except get_user_model().DoesNotExist:
+            raise ValidationError("로그인된 회원 정보가 없습니다. 회원가입을 진행해주세요.")
+
+        # 사용자가 존재하면 기본 로그인 로직을 호출하여 인증 진행
+        if user and not user.check_password(attrs.get('password')):
+            raise ValidationError("잘못된 비밀번호입니다.")
+        
+        return attrs
 
 
 
