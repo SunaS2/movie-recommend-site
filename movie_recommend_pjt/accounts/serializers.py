@@ -25,24 +25,24 @@ class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(max_length=30)  # 추가
     last_name = serializers.CharField(max_length=30)  # 추가
 
-    def validate_nickname(self, value):
-        """닉네임 중복 체크"""
-        if User.objects.filter(nickname=value).exists():
-            raise ValidationError("이 닉네임은 이미 사용 중입니다.")
-        return value
+    # def validate_nickname(self, value):
+    #     """닉네임 중복 체크"""
+    #     if User.objects.filter(nickname=value).exists():
+    #         raise ValidationError("이 닉네임은 이미 사용 중입니다.")
+    #     return value
 
-    def validate_email(self, value):
-        """이메일 중복 체크"""
-        if User.objects.filter(email=value).exists():
-            raise ValidationError("이 이메일은 이미 사용 중입니다.")
-        return value
+    # def validate_email(self, value):
+    #     """이메일 중복 체크"""
+    #     if User.objects.filter(email=value).exists():
+    #         raise ValidationError("이 이메일은 이미 사용 중입니다.")
+    #     return value
 
-    def validate_birth(self, value):
-        """생년월일이 범위 체크 (예: 미래 날짜나 비정상적인 날짜 처리)"""
-        from datetime import datetime
-        if value > datetime.today().date():
-            raise ValidationError("생년월일은 현재 날짜 이전이어야 합니다.")
-        return value
+    # def validate_birth(self, value):
+    #     """생년월일이 범위 체크 (예: 미래 날짜나 비정상적인 날짜 처리)"""
+    #     from datetime import datetime
+    #     if value > datetime.today().date():
+    #         raise ValidationError("생년월일은 현재 날짜 이전이어야 합니다.")
+    #     return value
 
     def get_cleaned_data(self):
         return {
@@ -71,19 +71,19 @@ class CustomLoginSerializer(LoginSerializer):
     username = serializers.CharField(required=True)
     email = None
 
-    def validate(self, attrs):
-        # 사용자가 입력한 username을 통해 해당 사용자 존재 여부 확인
-        user = None
-        try:
-            user = get_user_model().objects.get(username=attrs.get('username'))
-        except get_user_model().DoesNotExist:
-            raise ValidationError("로그인된 회원 정보가 없습니다. 회원가입을 진행해주세요.")
+    # def validate(self, attrs):
+    #     # 사용자가 입력한 username을 통해 해당 사용자 존재 여부 확인
+    #     user = None
+    #     try:
+    #         user = get_user_model().objects.get(username=attrs.get('username'))
+    #     except get_user_model().DoesNotExist:
+    #         raise ValidationError("로그인된 회원 정보가 없습니다. 회원가입을 진행해주세요.")
 
-        # 사용자가 존재하면 기본 로그인 로직을 호출하여 인증 진행
-        if user and not user.check_password(attrs.get('password')):
-            raise ValidationError("비밀번호가 일치하지 않습니다.")
+    #     # 사용자가 존재하면 기본 로그인 로직을 호출하여 인증 진행
+    #     if user and not user.check_password(attrs.get('password')):
+    #         raise ValidationError("비밀번호가 일치하지 않습니다.")
         
-        return attrs
+    #     return attrs
 
 
 
