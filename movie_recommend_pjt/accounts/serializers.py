@@ -26,19 +26,19 @@ class CustomRegisterSerializer(RegisterSerializer):
     last_name = serializers.CharField(max_length=30)  # 추가
 
     def validate_nickname(self, value):
-        """닉네임이 이미 존재하는지 체크"""
+        """닉네임 중복 체크"""
         if User.objects.filter(nickname=value).exists():
             raise ValidationError("이 닉네임은 이미 사용 중입니다.")
         return value
 
     def validate_email(self, value):
-        """이메일이 이미 등록되어 있는지 확인"""
+        """이메일 중복 체크"""
         if User.objects.filter(email=value).exists():
             raise ValidationError("이 이메일은 이미 사용 중입니다.")
         return value
 
     def validate_birth(self, value):
-        """생년월일이 올바른 범위에 있는지 체크 (예: 미래 날짜나 비정상적인 날짜 처리)"""
+        """생년월일이 범위 체크 (예: 미래 날짜나 비정상적인 날짜 처리)"""
         from datetime import datetime
         if value > datetime.today().date():
             raise ValidationError("생년월일은 현재 날짜 이전이어야 합니다.")
