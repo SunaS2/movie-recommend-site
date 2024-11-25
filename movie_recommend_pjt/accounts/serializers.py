@@ -25,6 +25,25 @@ class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(max_length=30)  # 추가
     last_name = serializers.CharField(max_length=30)  # 추가
 
+    def validate_nickname(self, value):
+        """닉네임이 이미 존재하는지 체크"""
+        if User.objects.filter(nickname=value).exists():
+            raise ValidationError("이 닉네임은 이미 사용 중입니다.")
+        return value
+
+    def validate_email(self, value):
+        """이메일이 이미 등록되어 있는지 확인"""
+        if User.objects.filter(email=value).exists():
+            raise ValidationError("이 이메일은 이미 사용 중입니다.")
+        return value
+
+    def validate_birth(self, value):
+        """생년월일이 올바른 범위에 있는지 체크 (예: 미래 날짜나 비정상적인 날짜 처리)"""
+        from datetime import datetime
+        if value > datetime.today().date():
+            raise ValidationError("생년월일은 현재 날짜 이전이어야 합니다.")
+        return value
+
     def get_cleaned_data(self):
         return {
             "username": self.validated_data.get("username", ""),
@@ -62,7 +81,7 @@ class CustomLoginSerializer(LoginSerializer):
 
         # 사용자가 존재하면 기본 로그인 로직을 호출하여 인증 진행
         if user and not user.check_password(attrs.get('password')):
-            raise ValidationError("잘못된 비밀번호입니다.")
+            raise ValidationError("비밀번호가 일치하지 않습니다.")
         
         return attrs
 
